@@ -8,6 +8,7 @@ public class AiChatApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(AiChatApplication.class, args);
+        System.out.println("AI Chat Application Started");
     }
 
 }
