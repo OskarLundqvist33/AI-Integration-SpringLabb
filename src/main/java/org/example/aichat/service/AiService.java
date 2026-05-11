@@ -30,14 +30,6 @@ public class AiService {
         );
     }
 
-    public String getAiResponse(String personality, String message) {
-        String systemPrompt = systemPrompts.getOrDefault(personality, systemPrompts.get("pirate"));
-
-        System.out.println("Calling AI with system prompt: " + systemPrompt);
-
-        return "Response for a '" + personality + "' about '" + message + "'";
-    }
-
     public ChatResponse getChatResponse(ChatRequest request) {
         String systemPrompt = systemPrompts.getOrDefault(request.personality(), systemPrompts.get("pirate"));
 
