@@ -5,12 +5,14 @@ import org.example.aichat.dto.ChatResponse;
 import org.example.aichat.dto.extern.Message;
 import org.example.aichat.dto.extern.OpenRouterRequest;
 import org.example.aichat.dto.extern.OpenRouterResponse;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
@@ -33,7 +35,8 @@ public class AiService {
     public ChatResponse getChatResponse(ChatRequest request) {
         String systemPrompt = systemPrompts.getOrDefault(request.personality(), systemPrompts.get("pirate"));
 
-        List<Message> history = conversationHistory.computeIfAbsent(request.sessionId(), k -> new ArrayList<>());
+        String sessionId = request.sessionId() != null ? request.sessionId() : UUID.randomUUID().toString();
+        List<Message> history = conversationHistory.computeIfAbsent(sessionId, k -> new ArrayList<>());
 
         if (history.isEmpty()) {
             history.add(new Message("system", systemPrompt));
@@ -46,6 +49,7 @@ public class AiService {
 
         OpenRouterResponse openRouterResponse = restClient.post()
                 .uri("/chat/completions")
+                .contentType(MediaType.APPLICATION_JSON)
                 .body(openRouterRequest)
                 .retrieve()
                 .body(OpenRouterResponse.class);
